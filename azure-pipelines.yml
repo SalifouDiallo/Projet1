@@ -1,3 +1,4 @@
+
 # Starter pipeline
 # Start with a minimal pipeline that you can customize to build and deploy your code.
 # Add steps that build, run tests, deploy, and more:
@@ -22,3 +23,13 @@ steps:
     csmFile: '$(Build.SourcesDirectory)\azuredeploy.json'
     csmParametersFile: '$(Build.SourcesDirectory)\azuredeploy.parameters.json'
     deploymentMode: 'Validation'
+
+- task: AzureKeyVault@2
+  name: AzureKey
+  inputs:
+    azureSubscription: 'Azure for Students(1)(0673c009-6d00-4254-9178-35fed48c87be)'
+    KeyVaultName: 'VaultProjet1'
+    SecretsFilter: 'monsecret'
+    RunAsPreJob: false
+- script: echo New Value $(AzureKey.monsecret)
+  displayName: 'step 2.1'
