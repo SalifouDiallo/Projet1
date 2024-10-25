@@ -9,9 +9,11 @@ trigger:
 
 pool: "default"
 
-
+variables:
+ -name: CloudInitCountent
 
 steps:
+
 - task: AzureResourceManagerTemplateDeployment@3
   inputs:
     deploymentScope: 'Resource Group'
@@ -34,3 +36,29 @@ steps:
     RunAsPreJob: false
 - script: echo New Value $(AzureKey.monsecret)
   displayName: 'step 2.1'
+
+- task: PowerShell@2
+  inputs:
+    targetType: 'inline'
+    script: |
+      $CloudContent = Get-Content -Path .\Projet1\Cloud-Init.txt -Raw
+      Write-Host $CloudContent
+      $encodedContent = [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($CloudContent))
+      Write-Host $encodedContent
+      Write-Host "##vso[task.setvariable variable=CloudInitContent;]$encodedContent"
+- script: |
+    echo $(CloudInitContent)
+
+- task: AzureResourceManagerTemplateDeployment@3
+  inputs:
+    deploymentScope: 'Resource Group'
+    azureResourceManagerConnection: 'Azure for Students(0673c009-6d00-4254-9178-35fed48c87be)'
+    subscriptionId: '0673c009-6d00-4254-9178-35fed48c87be'
+    action: 'Create Or Update Resource Group'
+    resourceGroupName: 'Projet1'
+    location: 'East US'
+    templateLocation: 'Linked artifact'
+    csmFile: '$(Build.SourcesDirectory)\Projet1\azuredeploy.json'
+    csmParametersFile: '$(Build.SourcesDirectory)\Projet1\azuredeploy.parameters.json'
+    overrideParameters: '-customData $(CloudInitCountent)'
+    deploymentMode: 'Incremental'
