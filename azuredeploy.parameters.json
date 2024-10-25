@@ -132,7 +132,7 @@
       }
     },
     "customData": {
-      "value": null
+      "value": "echo 'Hello World' > /var/log/startup.log"
     },
     "securityType": {
       "value": "TrustedLaunch"
