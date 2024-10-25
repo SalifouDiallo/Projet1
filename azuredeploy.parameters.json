@@ -128,7 +128,7 @@
         "keyVault": {
           "id": "/subscriptions/0673c009-6d00-4254-9178-35fed48c87be/resourceGroups/Projet1/providers/Microsoft.KeyVault/vaults/VaultProjet1"
         },
-        "secretName": "monsecret"
+        "secretName": "codesecret"
       }
     },
     "customData": {
