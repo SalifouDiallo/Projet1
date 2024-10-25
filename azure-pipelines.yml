@@ -32,9 +32,9 @@ steps:
   inputs:
     azureSubscription: 'Azure for Students(1)(0673c009-6d00-4254-9178-35fed48c87be)'
     KeyVaultName: 'VaultProjet1'
-    SecretsFilter: 'monsecret'
+    SecretsFilter: 'codesecret'
     RunAsPreJob: false
-- script: echo New Value $(AzureKey.monsecret)
+- script: echo New Value $(AzureKey.codesecret)
   displayName: 'step 2.1'
 
 - task: PowerShell@2
