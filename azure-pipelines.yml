@@ -62,3 +62,16 @@ steps:
     csmParametersFile: '$(Build.SourcesDirectory)\azuredeploy.parameters.json'
     overrideParameters: '-customData $(CloudInitContent)'
     deploymentMode: 'Incremental'
+  
+- task: AzureResourceManagerTemplateDeployment@3
+  inputs:
+      deploymentScope: 'Resource Group'
+      azureResourceManagerConnection: 'Abonnement Azure PAYG(1)(0673c009-6d00-4254-9178-35fed48c87be)'
+      subscriptionId: '0673c009-6d00-4254-9178-35fed48c87be'
+      action: 'Create Or Update Resource Group'
+      resourceGroupName: 'Projet1'
+      location: 'East US'
+      templateLocation: 'Linked artifact'
+      csmFile: '$(Build.SourcesDirectory)\Projet1\azuredeploy.json'
+      csmParametersFile: '$(Build.SourcesDirectory)\Projet1\azuredeploy.parameters.json'
+      deploymentMode: 'Incremental'
