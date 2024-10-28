@@ -115,7 +115,7 @@
     {
       "name": "[parameters('virtualNetworkName')]",
       "type": "Microsoft.Network/virtualNetworks",
-      "apiVersion": "2024-01-01",
+      "apiVersion": "2020-11-01", // Modification de la version
       "location": "[parameters('location')]",
       "properties": {
         "addressSpace": {
@@ -140,7 +140,7 @@
     {
       "name": "[concat(parameters('loadBalancerName'), '-publicip')]",
       "type": "Microsoft.Network/publicIpAddresses",
-      "apiVersion": "2020-08-01",
+      "apiVersion": "2020-11-01", // Modification de la version
       "location": "[parameters('location')]",
       "properties": {
         "publicIpAllocationMethod": "Static",
@@ -155,7 +155,7 @@
     {
       "name": "[parameters('loadBalancerName')]",
       "type": "Microsoft.Network/loadBalancers",
-      "apiVersion": "2021-05-01",
+      "apiVersion": "2020-11-01", // Modification de la version
       "location": "[parameters('location')]",
       "sku": {
         "name": "Standard"
@@ -240,6 +240,7 @@
       "type": "Microsoft.Compute/virtualMachineScaleSets",
       "apiVersion": "[variables('virtualMachineScaleSetApiVersion')]",
       "location": "[parameters('location')]",
+      "zones": [ "1", "2", "3" ], // Ajout pour distribuer sur les zones
       "dependsOn": [
         "[concat('Microsoft.Network/virtualNetworks/', parameters('virtualNetworkName'))]",
         "networkSecurityGroups",
@@ -284,7 +285,8 @@
                           "primary": "[parameters('networkInterfaceConfigurations')[copyIndex('networkInterfaceConfigurations')].primary]",
                           "applicationGatewayBackendAddressPools": "[parameters('networkInterfaceConfigurations')[copyIndex('networkInterfaceConfigurations')].applicationGatewayBackendAddressPools]",
                           "loadBalancerBackendAddressPools": "[parameters('networkInterfaceConfigurations')[copyIndex('networkInterfaceConfigurations')].loadBalancerBackendAddressPools]",
-                          "publicIPAddressConfiguration": "[if( equals( parameters('networkInterfaceConfigurations')[copyIndex('networkInterfaceConfigurations')].pipName, ''), json('null'), union(json(concat('{\"name\": \"', parameters('networkInterfaceConfigurations')[copyIndex('networkInterfaceConfigurations')].pipName, '\"}'))\n        ,json('{\"properties\": { \"idleTimeoutInMinutes\": 15}}')))]"
+                          "publicIPAddressConfiguration": "[if(equals(parameters('networkInterfaceConfigurations')[copyIndex('networkInterfaceConfigurations')].pipName, ''), json('null'), json(concat('{\"name\": \"', parameters('networkInterfaceConfigurations')[copyIndex('networkInterfaceConfigurations')].pipName, '\", \"properties\": { \"idleTimeoutInMinutes\": 15}}')))]"
+
                         }
                       }
                     ],
