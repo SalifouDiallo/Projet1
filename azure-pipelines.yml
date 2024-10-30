@@ -76,3 +76,16 @@ steps:
       csmParametersFile: '$(Build.SourcesDirectory)\azuredeploy.parameters.json'
       overrideParameters: '-customData "$(CloudInitContent)"'
       deploymentMode: 'Incremental'
+
+- task: AzureResourceManagerTemplateDeployment@3
+  inputs:
+    deploymentScope: 'Resource Group'
+    azureResourceManagerConnection: 'Azure for Students(1)(0673c009-6d00-4254-9178-35fed48c87be)'
+    subscriptionId: '0673c009-6d00-4254-9178-35fed48c87be'
+    action: 'Create Or Update Resource Group'
+    resourceGroupName: 'Projet1'
+    location: 'Canada Central'
+    templateLocation: 'Linked artifact'
+    csmFile: '$(Build.SourcesDirectory)\azuredeploy.json'
+    csmParametersFile: '$(Build.SourcesDirectory)\azuredeploy.parameters.json'
+    deploymentMode: 'Validation'
