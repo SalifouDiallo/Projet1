@@ -251,14 +251,14 @@
         "virtualMachineProfile": {
           "storageProfile": {
             "osDisk": {
-              "createOption": "fromImage",
+              "createOption": "fromImage", // Création de disque à partir de l'image.
               "caching": "ReadWrite",
               "managedDisk": {
-                "storageAccountType": "[parameters('osDiskType')]"
+                "storageAccountType": "[parameters('osDiskType')]" // Type de disque géré.
               }
             },
             "imageReference": {
-              "publisher": "canonical",
+              "publisher": "canonical", // Référence de l'image VM (Ubuntu).
               "offer": "ubuntu-24_04-lts",
               "sku": "server",
               "version": "latest"
@@ -316,7 +316,7 @@
           },
           "osProfile": {
             "computerNamePrefix": "[variables('namingInfix')]",
-            "adminUsername": "[parameters('adminUsername')]",
+            "adminUsername": "[parameters('adminUsername')]", // Paramètres d'accès.
             "adminPassword": "[parameters('adminPassword')]",
             "linuxConfiguration": {
               "disablePasswordAuthentication": false,
@@ -324,7 +324,7 @@
                 "patchMode": "ImageDefault"
               }
             },
-            "customData": "[parameters('customData')]"
+            "customData": "[parameters('customData')]" // Données personnalisées pour la configuration de VM.
           },
           "securityProfile": {
             "securityType": "[parameters('securityType')]",
@@ -338,7 +338,7 @@
         "platformFaultDomainCount": "[parameters('platformFaultDomainCount')]",
         "scaleInPolicy": "[parameters('scaleInPolicy')]",
         "upgradePolicy": {
-          "mode": "[parameters('upgradePolicy')]"
+          "mode": "[parameters('upgradePolicy')]" // Politique de mise à jour du groupe.
         },
         "additionalCapabilities": {
           "hibernationEnabled": false
@@ -350,15 +350,15 @@
         }
       },
       "sku": {
-        "name": "[parameters('instanceSize')]",
-        "capacity": "[int(parameters('instanceCount'))]"
+        "name": "[parameters('instanceSize')]", // Taille de l'instance VM. 
+        "capacity": "[int(parameters('instanceCount'))]" // Nombre d'instances VM.
       }
     }
   ],
   "outputs": {
     "adminUsername": {
       "type": "string",
-      "value": "[parameters('adminUsername')]"
+      "value": "[parameters('adminUsername')]" // Affichage du nom d'utilisateur admin en sortie.
     }
   }
 }
