@@ -5,15 +5,16 @@
 # https://aka.ms/yaml
 
 trigger:
-- master
+- master        # Declenche le pipeline a chaque modification sur la branche 'master'.
 
-pool: "default"
+pool: "default"  # Definit le pool d'agents par defaut pour executer les taches.
 
 variables:
- -name: CloudInitContent
+ -name: CloudInitContent  # Variable pour stocker le contenu encode en Base64.
 
 steps:
 
+# Validation du modele ARM avant deploiement
 - task: AzureResourceManagerTemplateDeployment@3
   inputs:
     deploymentScope: 'Resource Group'
@@ -26,7 +27,7 @@ steps:
     csmFile: '$(Build.SourcesDirectory)\azuredeploy.json'
     csmParametersFile: '$(Build.SourcesDirectory)\azuredeploy.parameters.json'
     deploymentMode: 'Validation'
-
+# Recuperation d'un secret depuis Azure Key Vault
 - task: AzureKeyVault@2
   name: AzureKey
   inputs:
@@ -36,7 +37,7 @@ steps:
     RunAsPreJob: false
 - script: echo New Value $(AzureKey.codesecret)
   displayName: 'step 2.1'
-
+# Encodage d'un fichier en Base64 pour utilisation dans ARM
 - task: PowerShell@2
   inputs:
     targetType: 'inline'
@@ -48,7 +49,7 @@ steps:
       Write-Host "##vso[task.setvariable variable=CloudInitContent;]$encodedContent"
 - script: |
     echo $(CloudInitContent)
-
+# Deploiement incremental avec modele ARM et donnees personnalisees
 - task: AzureResourceManagerTemplateDeployment@3
   inputs:
     deploymentScope: 'Resource Group'
@@ -62,7 +63,7 @@ steps:
     csmParametersFile: '$(Build.SourcesDirectory)\azuredeploy.parameters.json'
     overrideParameters: '-customData $(CloudInitContent)'
     deploymentMode: 'Incremental'
-  
+# Deploiement dans une autre region avec parametres similaires  
 - task: AzureResourceManagerTemplateDeployment@3
   inputs:
       deploymentScope: 'Resource Group'
@@ -76,7 +77,7 @@ steps:
       csmParametersFile: '$(Build.SourcesDirectory)\azuredeploy.parameters.json'
       overrideParameters: '-customData "$(CloudInitContent)"'
       deploymentMode: 'Incremental'
-
+# Validation finale du modele dans une autre region
 - task: AzureResourceManagerTemplateDeployment@3
   inputs:
     deploymentScope: 'Resource Group'
@@ -89,7 +90,7 @@ steps:
     csmFile: '$(Build.SourcesDirectory)\azuredeploy.json'
     csmParametersFile: '$(Build.SourcesDirectory)\azuredeploy.parameters.json'
     deploymentMode: 'Validation'
-
+# Derniere etape de deploiement incremental avec toutes les configurations
 - task: AzureResourceManagerTemplateDeployment@3
   inputs:
     deploymentScope: 'Resource Group'
@@ -102,4 +103,4 @@ steps:
     csmFile: '$(Build.SourcesDirectory)\azuredeploy.json'
     csmParametersFile: '$(Build.SourcesDirectory)\azuredeploy.parameters.json'
     overrideParameters: '-customData "$(CloudInitContent)"'
-    deploymentMode: 'Incremental'
+    deploymentMode: 'Incremental' # Mode de deploiement final pour ajouter ou mettre a jour les ressources.
