@@ -101,5 +101,5 @@ steps:
     templateLocation: 'Linked artifact'
     csmFile: '$(Build.SourcesDirectory)\azuredeploy.json'
     csmParametersFile: '$(Build.SourcesDirectory)\azuredeploy.parameters.json'
-    overrideParameters: '-customData "$(CloudInitContent)'
-    deploymentMode: 'Complete'
+    overrideParameters: '-customData "$(CloudInitContent)"'
+    deploymentMode: 'Incremental'
