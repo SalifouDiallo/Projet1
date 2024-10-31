@@ -106,10 +106,10 @@
     }
   },
   "variables": {
-    "storageApiVersion": "2021-01-01",
-    "networkApiVersion": "2020-11-01",
-    "virtualMachineScaleSetApiVersion": "2023-09-01",
-    "namingInfix": "[toLower(substring(concat(parameters('virtualMachineScaleSetName'), uniqueString(resourceGroup().id)), 0, 9))]"
+    "storageApiVersion": "2021-01-01", // Version de l'API pour les ressources de stockage.
+    "networkApiVersion": "2020-11-01", // Version de l'API pour les ressources réseau.
+    "virtualMachineScaleSetApiVersion": "2023-09-01", // Version de l'API pour le groupe d'échelles.
+    "namingInfix": "[toLower(substring(concat(parameters('virtualMachineScaleSetName'), uniqueString(resourceGroup().id)), 0, 9))]" // Préfixe unique pour les noms d'instances.
   },
   "resources": [
     {

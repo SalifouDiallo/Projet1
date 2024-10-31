@@ -1,42 +1,42 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
+  "contentVersion": "1.0.0.0", // Version du modèle de paramètres
+  "parameters": { // Paramètres de configuration pour personnaliser le déploiement
     "location": {
-      "value": "canadacentral"
+      "value": "canadacentral" // Région Azure pour déployer les ressources
     },
     "osDiskType": {
-      "value": "Premium_LRS"
+      "value": "Premium_LRS" // Type de disque OS (Premium pour de meilleures performances)
     },
     "addressPrefixes": {
       "value": [
-        "10.0.0.0/16"
+        "10.0.0.0/16" // Plage d'adresses IP pour le réseau virtuel
       ]
     },
     "subnets": {
       "value": [
         {
-          "name": "default",
+          "name": "default", // Nom du sous-réseau
           "properties": {
-            "addressPrefix": "10.0.0.0/20"
+            "addressPrefix": "10.0.0.0/20" // Plage d'adresses IP pour ce sous-réseau
           }
         }
       ]
     },
     "virtualNetworkId": {
-      "value": "/subscriptions/0673c009-6d00-4254-9178-35fed48c87be/resourceGroups/Projet1/providers/Microsoft.Network/virtualNetworks/Projet1-vnet"
+      "value": "/subscriptions/0673c009-6d00-4254-9178-35fed48c87be/resourceGroups/Projet1/providers/Microsoft.Network/virtualNetworks/Projet1-vnet" // ID du réseau virtuel (VNet)
     },
     "virtualNetworkName": {
-      "value": "Projet1-vnet"
+      "value": "Projet1-vnet" // Nom du réseau virtuel
     },
     "networkSecurityGroups": {
       "value": [
         {
-          "name": "basicNsgProjet1-vnet-nic01",
+          "name": "basicNsgProjet1-vnet-nic01", // Nom du groupe de sécurité réseau (NSG)
           "id": "/subscriptions/0673c009-6d00-4254-9178-35fed48c87be/resourceGroups/Projet1/providers/Microsoft.Network/networkSecurityGroups/basicNsgProjet1-vnet-nic01",
           "rules": [
             {
-              "name": "Tcp",
+              "name": "Tcp", // Nom de la règle de sécurité
               "properties": {
                 "priority": 300,
                 "protocol": "Tcp",
@@ -45,7 +45,7 @@
                 "sourceAddressPrefix": "*",
                 "sourcePortRange": "*",
                 "destinationAddressPrefix": "*",
-                "destinationPortRange": "80"
+                "destinationPortRange": "80" // Port de destination autorisé : 80
               }
             }
           ]
@@ -55,10 +55,10 @@
     "networkInterfaceConfigurations": {
       "value": [
         {
-          "name": "Projet1-vnet-nic01",
+          "name": "Projet1-vnet-nic01", // Nom de la configuration d'interface réseau
           "primary": true,
           "subnetId": "/subscriptions/0673c009-6d00-4254-9178-35fed48c87be/resourceGroups/Projet1/providers/Microsoft.Network/virtualNetworks/Projet1-vnet/subnets/default",
-          "applicationGatewayBackendAddressPools": [],
+          "applicationGatewayBackendAddressPools": [], // Pool d'adresses backend pour une gateway d'application (vide ici)
           "loadBalancerBackendAddressPools": [
             {
               "id": "[resourceId('Microsoft.Network/loadBalancers/backendAddressPools', parameters('loadBalancerName'), parameters('backendPoolName'))]"
@@ -69,27 +69,27 @@
           "enableAcceleratedNetworking": false,
           "nsgName": "basicNsgProjet1-vnet-nic01",
           "nsgId": "/subscriptions/0673c009-6d00-4254-9178-35fed48c87be/resourceGroups/Projet1/providers/Microsoft.Network/networkSecurityGroups/basicNsgProjet1-vnet-nic01",
-          "pipName": "publicIp-Projet1-vnet-nic01"
+          "pipName": "publicIp-Projet1-vnet-nic01" // Nom de l'adresse IP publique associée
         }
       ]
     },
     "backendPoolName": {
-      "value": "bepool"
+      "value": "bepool" // Nom du pool backend pour le Load Balancer
     },
     "loadBalancerName": {
-      "value": "ALB"
+      "value": "ALB" // Nom du Load Balancer
     },
     "loadbalancingRuleFrontEndPort": {
-      "value": 80
+      "value": 80 // Port frontal pour la règle d'équilibrage de charge
     },
     "loadbalancingRuleBackendEndPort": {
-      "value": 80
+      "value": 80 // Port backend pour la règle d'équilibrage de charge
     },
     "loadbalancingRuleProtocol": {
-      "value": "Tcp"
+      "value": "Tcp" // Protocole pour la règle d'équilibrage (TCP)
     },
     "InboundNATRuleFrontEndPortRangeStart": {
-      "value": 50000
+      "value": 50000 // Début de la plage de ports NAT entrants
     },
     "vmName": {
       "value": "VMss1"
@@ -111,11 +111,11 @@
         "rules": [
           "Default"
         ],
-        "forceDeletion": false
+        "forceDeletion": false // Suppression forcée désactivée
       }
     },
     "upgradePolicy": {
-      "value": "Manual"
+      "value": "Manual" // Politique de mise à niveau : manuelle
     },
     "hibernationEnabled": {
       "value": false
@@ -126,40 +126,39 @@
     "adminPassword": {
       "reference": {
         "keyVault": {
-          "id": "/subscriptions/0673c009-6d00-4254-9178-35fed48c87be/resourceGroups/Projet1/providers/Microsoft.KeyVault/vaults/VaultProjet1"
+          "id": "/subscriptions/0673c009-6d00-4254-9178-35fed48c87be/resourceGroups/Projet1/providers/Microsoft.KeyVault/vaults/VaultProjet1" // ID du Key Vault pour stocker le mot de passe
         },
-        "secretName": "codesecret"
+        "secretName": "codesecret" // Nom du secret contenant le mot de passe
       }
     },
     "customData": {
-      "value": "echo 'Hello World' > /var/Log/startup. log"
+      "value": "echo 'Hello World' > /var/Log/startup. log" // Script personnalisé exécuté au démarrage
     },
     "securityType": {
-      "value": "TrustedLaunch"
+      "value": "TrustedLaunch" // Type de sécurité (Trusted Launch pour sécurité accrue)
     },
     "secureBoot": {
-      "value": true
+      "value": true // Démarrage sécurisé activé
     },
     "vTPM": {
-      "value": true
+      "value": true // Module TPM virtuel activé
     },
     "healthExtensionProtocol": {
-      "value": "http"
+      "value": "http" // Protocole pour l'extension de vérification de santé (HTTP)
     },
     "healthExtensionPort": {
-      "value": 80
+      "value": 80 // Port pour la vérification de santé
     },
     "healthExtensionRequestPath": {
-      "value": "/"
+      "value": "/" // Chemin de requête pour la vérification de santé
     },
     "autoRepairsPolicyEnabled": {
-      "value": false
+      "value": false // Réparations automatiques désactivées
     },
     "gracePeriod": {
-      "value": "PT10M"
+      "value": "PT10M" // Période de grâce avant réparation automatique (désactivée ici)
     },
     "autoRepairsAction": {
-      "value": "Replace"
+      "value": "Replace" // Action de réparation automatique : remplacement (si activé)
     }
   }
-}
