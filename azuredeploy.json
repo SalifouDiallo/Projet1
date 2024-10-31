@@ -1,27 +1,27 @@
 {
   "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-  "contentVersion": "1.0.0.0",
+  "contentVersion": "1.0.0.0", // Version du modèle.
   "parameters": {
     "location": {
-      "type": "string"
+      "type": "string" // Emplacement de déploiement. 
     },
     "osDiskType": {
-      "type": "string"
+      "type": "string"  
     },
     "addressPrefixes": {
-      "type": "array"
+      "type": "array" // Plages d'adresses pour le réseau virtuel.
     },
     "subnets": {
-      "type": "array"
+      "type": "array" // Configuration des sous-réseaux.
     },
     "virtualNetworkId": {
-      "type": "string"
+      "type": "string" // Id du réseau virtuel.
     },
     "virtualNetworkName": {
-      "type": "string"
+      "type": "string" // Nom du réseau virtuel.
     },
     "networkSecurityGroups": {
-      "type": "array"
+      "type": "array" // Groupes de sécurité pour les réseaux.
     },
     "networkInterfaceConfigurations": {
       "type": "array"
@@ -48,13 +48,13 @@
       "type": "string"
     },
     "virtualMachineScaleSetName": {
-      "type": "string"
+      "type": "string" // Nom du groupe d'échelles de machines virtuelles.
     },
     "instanceCount": {
-      "type": "string"
+      "type": "string" // Nombre d'instances VM.
     },
     "instanceSize": {
-      "type": "string"
+      "type": "string" // Taille des instances VM.
     },
     "platformFaultDomainCount": {
       "type": "string"
@@ -69,13 +69,13 @@
       "type": "bool"
     },
     "adminUsername": {
-      "type": "string"
+      "type": "string" // Nom d'utilisateur administrateur.
     },
     "adminPassword": {
-      "type": "secureString"
+      "type": "secureString" // Mot de passe administrateur, sécurisé.
     },
     "customData": {
-      "type": "secureString"
+      "type": "secureString" // Données personnalisées encodées en Base64.
     },
     "securityType": {
       "type": "string"
