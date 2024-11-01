@@ -23,15 +23,15 @@
   <Import Condition=" Exists('$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Deployment\1.1\DeploymentProject.targets') " Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Deployment\1.1\DeploymentProject.targets" />
   <!-- vertag<:>end -->
   <ItemGroup>
-    <Content Include="azuredeploy.json" />
-    <Content Include="azuredeploy.parameters.json" />
     <None Include="Cloud-Init.txt" />
     <None Include="Deployment.targets">
       <Visible>False</Visible>
     </None>
     <Content Include="Deploy-AzureResourceGroup.ps1" />
-    <None Include="KeyVqultRG\azuredeploy.json" />
-    <None Include="KeyVqultRG\azuredeploy.parameters.json" />
+    <None Include="KeyVaultRG\azuredeploy.json" />
+    <None Include="KeyVaultRG\azuredeploy.parameters.json" />
+    <None Include="VMSS\azuredeploy.json" />
+    <None Include="VMSS\azuredeploy.parameters.json" />
   </ItemGroup>
   <Target Name="GetReferenceAssemblyPaths" />
 </Project>
