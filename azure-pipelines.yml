@@ -29,7 +29,7 @@ steps:
     deploymentMode: 'Incremental'
 
 # Recuperation d'un secret depuis Azure Key Vault
-- task: AzureKeyVault@2
+- task: AzureKeyVault@1
   inputs:
     azureSubscription: 'Azure for Students(0673c009-6d00-4254-9178-35fed48c87be)'
     KeyVaultName: 'tpkeysalifou'
