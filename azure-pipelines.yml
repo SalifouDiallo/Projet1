@@ -18,25 +18,27 @@ steps:
 - task: AzureResourceManagerTemplateDeployment@3
   inputs:
     deploymentScope: 'Resource Group'
-    azureResourceManagerConnection: 'Azure for Students(0673c009-6d00-4254-9178-35fed48c87be)'
+    azureResourceManagerConnection: 'Azure for Students(1)(0673c009-6d00-4254-9178-35fed48c87be)'
     subscriptionId: '0673c009-6d00-4254-9178-35fed48c87be'
     action: 'Create Or Update Resource Group'
-    resourceGroupName: 'Projet1'
+    resourceGroupName: 'KeyRessourceGroup'
     location: 'East US'
     templateLocation: 'Linked artifact'
-    csmFile: '$(Build.SourcesDirectory)\azuredeploy.json'
-    csmParametersFile: '$(Build.SourcesDirectory)\azuredeploy.parameters.json'
-    deploymentMode: 'Validation'
+    csmFile: '$(Build.SourcesDirectory)\KeyVaultRG\azuredeploy.json'
+    csmParametersFile: '$(Build.SourcesDirectory)\KeyVaultRG\azuredeploy.parameters.json'
+    deploymentMode: 'Incremental'
+
 # Recuperation d'un secret depuis Azure Key Vault
 - task: AzureKeyVault@2
-  name: AzureKey
   inputs:
-    azureSubscription: 'Azure for Students(1)(0673c009-6d00-4254-9178-35fed48c87be)'
-    KeyVaultName: 'VaultProjet1'
-    SecretsFilter: 'codesecret'
+    azureSubscription: 'Azure for Students(0673c009-6d00-4254-9178-35fed48c87be)'
+    KeyVaultName: 'tpkeysalifou'
+    SecretsFilter: '*'
+    SecretsAction: 'Create'
+    SecretName: 'adminPass'
+    SecretValue: $(adminPass)
     RunAsPreJob: false
-- script: echo New Value $(AzureKey.codesecret)
-  displayName: 'step 2.1'
+
 # Encodage d'un fichier en Base64 pour utilisation dans ARM
 - task: PowerShell@2
   inputs:
@@ -47,60 +49,17 @@ steps:
       $encodedContent = [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($CloudContent))
       Write-Host $encodedContent
       Write-Host "##vso[task.setvariable variable=CloudInitContent;]$encodedContent"
-- script: |
-    echo $(CloudInitContent)
-# Deploiement incremental avec modele ARM et donnees personnalisees
+
 - task: AzureResourceManagerTemplateDeployment@3
   inputs:
     deploymentScope: 'Resource Group'
     azureResourceManagerConnection: 'Azure for Students(0673c009-6d00-4254-9178-35fed48c87be)'
     subscriptionId: '0673c009-6d00-4254-9178-35fed48c87be'
     action: 'Create Or Update Resource Group'
-    resourceGroupName: 'Projet1'
-    location: 'East US'
+    resourceGroupName: 'vmsscire'
+    location: 'Canada Central'
     templateLocation: 'Linked artifact'
-    csmFile: '$(Build.SourcesDirectory)\azuredeploy.json'
-    csmParametersFile: '$(Build.SourcesDirectory)\azuredeploy.parameters.json'
-    overrideParameters: '-customData $(CloudInitContent)'
+    csmFile: '$(Build.SourcesDirectory)\VMSS\azuredeploy.json'
+    csmParametersFile: '$(Build.SourcesDirectory)\VMSS\azuredeploy.parameters.json'
+    overrideParameters: '-adminPassword $(adminPass) -customData $(CloudInitContent)'
     deploymentMode: 'Incremental'
-# Deploiement dans une autre region avec parametres similaires  
-- task: AzureResourceManagerTemplateDeployment@3
-  inputs:
-      deploymentScope: 'Resource Group'
-      azureResourceManagerConnection: 'Abonnement Azure PAYG(1)(0673c009-6d00-4254-9178-35fed48c87be)'
-      subscriptionId: '0673c009-6d00-4254-9178-35fed48c87be'
-      action: 'Create Or Update Resource Group'
-      resourceGroupName: 'Projet1'
-      location: 'East US'
-      templateLocation: 'Linked artifact'
-      csmFile: '$(Build.SourcesDirectory)\azuredeploy.json'
-      csmParametersFile: '$(Build.SourcesDirectory)\azuredeploy.parameters.json'
-      overrideParameters: '-customData "$(CloudInitContent)"'
-      deploymentMode: 'Incremental'
-# Validation finale du modele dans une autre region
-- task: AzureResourceManagerTemplateDeployment@3
-  inputs:
-    deploymentScope: 'Resource Group'
-    azureResourceManagerConnection: 'Azure for Students(1)(0673c009-6d00-4254-9178-35fed48c87be)'
-    subscriptionId: '0673c009-6d00-4254-9178-35fed48c87be'
-    action: 'Create Or Update Resource Group'
-    resourceGroupName: 'Projet1'
-    location: 'Canada Central'
-    templateLocation: 'Linked artifact'
-    csmFile: '$(Build.SourcesDirectory)\azuredeploy.json'
-    csmParametersFile: '$(Build.SourcesDirectory)\azuredeploy.parameters.json'
-    deploymentMode: 'Validation'
-# Derniere etape de deploiement incremental avec toutes les configurations
-- task: AzureResourceManagerTemplateDeployment@3
-  inputs:
-    deploymentScope: 'Resource Group'
-    azureResourceManagerConnection: 'Azure for Students(0673c009-6d00-4254-9178-35fed48c87be)'
-    subscriptionId: '0673c009-6d00-4254-9178-35fed48c87be'
-    action: 'Create Or Update Resource Group'
-    resourceGroupName: 'Projet1'
-    location: 'Canada Central'
-    templateLocation: 'Linked artifact'
-    csmFile: '$(Build.SourcesDirectory)\azuredeploy.json'
-    csmParametersFile: '$(Build.SourcesDirectory)\azuredeploy.parameters.json'
-    overrideParameters: '-customData "$(CloudInitContent)"'
-    deploymentMode: 'Incremental' # Mode de deploiement final pour ajouter ou mettre a jour les ressources.
