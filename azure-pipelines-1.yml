@@ -1,0 +1,41 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- master
+
+pool: 'default'
+
+variables:
+ - name: CloudInitContent  # Variable pour stocker le contenu encode en Base64.
+   value: ''
+
+steps:
+- task: AzureResourceManagerTemplateDeployment@3
+  inputs:
+    deploymentScope: 'Resource Group'
+    azureResourceManagerConnection: 'Azure for Students(1)(0673c009-6d00-4254-9178-35fed48c87be)'
+    subscriptionId: '0673c009-6d00-4254-9178-35fed48c87be'
+    action: 'Create Or Update Resource Group'
+    resourceGroupName: 'KeyRessourceGroup'
+    location: 'East US'
+    templateLocation: 'Linked artifact'
+    csmFile: '$(Build.SourcesDirectory)\KeyVaultRG\azuredeploy.json'
+    csmParametersFile: '$(Build.SourcesDirectory)\KeyVaultRG\azuredeploy.parameters.json'
+    deploymentMode: 'Validation'
+
+- task: AzureResourceManagerTemplateDeployment@3
+  inputs:
+    deploymentScope: 'Resource Group'
+    azureResourceManagerConnection: 'Azure for Students(0673c009-6d00-4254-9178-35fed48c87be)'
+    subscriptionId: '0673c009-6d00-4254-9178-35fed48c87be'
+    action: 'Create Or Update Resource Group'
+    resourceGroupName: 'vmsscire'
+    location: 'Canada Central'
+    templateLocation: 'Linked artifact'
+    csmFile: '$(Build.SourcesDirectory)\VMSS\azuredeploy.json'
+    csmParametersFile: '$(Build.SourcesDirectory)\VMSS\azuredeploy.parameters.json'
+    overrideParameters: '-adminPassword $(adminPass) -customData $(CloudInitContent)'
+    deploymentMode: 'Validation'
