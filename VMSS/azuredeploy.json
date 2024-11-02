@@ -1,12 +1,12 @@
 ﻿{
-  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#", // Schéma pour valider le modèle de déploiement Azure.
+  "contentVersion": "1.0.0.0", // Version du modèle, utilisée pour gérer les modifications.
+  "parameters": { // Section des paramètres, qui rendent le modèle flexible. Ceux-ci peuvent être modifiés sans toucher au reste du modèle.
     "location": {
       "type": "string"
     },
     "osDiskType": {
-      "type": "string"
+      "type": "string" // Type de disque du système d'exploitation, détermine la vitesse et le coût (ex: Standard ou Premium).
     },
     "addressPrefixes": {
       "type": "array"
@@ -23,13 +23,13 @@
     "networkSecurityGroups": {
       "type": "array"
     },
-    "networkInterfaceConfigurations": {
+    "networkInterfaceConfigurations": { // Configuration des interfaces réseau, permettant la gestion du trafic et de la connectivité des machines virtuelles.
       "type": "array"
     },
     "backendPoolName": {
       "type": "string"
     },
-    "loadBalancerName": {
+    "loadBalancerName": { // Nom du load balancer, qui distribue le trafic vers les instances de VM.
       "type": "string"
     },
     "loadbalancingRuleFrontEndPort": {
@@ -50,10 +50,10 @@
     "virtualMachineScaleSetName": {
       "type": "string"
     },
-    "instanceCount": {
+    "instanceCount": { // Nombre d'instances dans le scale set, contrôlant la capacité de traitement.
       "type": "string"
     },
-    "instanceSize": {
+    "instanceSize": { // Taille des machines virtuelles dans le scale set (ex: Standard_D2s_v3).
       "type": "string"
     },
     "zone": {
@@ -74,10 +74,10 @@
     "hibernationEnabled": {
       "type": "bool"
     },
-    "adminUsername": {
+    "adminUsername": { // Nom d'utilisateur administrateur pour les VM, requis pour la connexion.
       "type": "string"
     },
-    "adminPassword": {
+    "adminPassword": { // Mot de passe administrateur pour les VM, stocké de manière sécurisée.
       "type": "secureString"
     },
     "customData": {
@@ -111,15 +111,15 @@
       "type": "string"
     }
   },
-  "variables": {
+  "variables": { // Variables utilisées pour des valeurs calculées ou de configuration.
     "storageApiVersion": "2021-01-01",
     "networkApiVersion": "2020-11-01",
     "virtualMachineScaleSetApiVersion": "2024-07-01",
-    "namingInfix": "[toLower(substring(concat(parameters('virtualMachineScaleSetName'), uniqueString(resourceGroup().id)), 0, 9))]",
+    "namingInfix": "[toLower(substring(concat(parameters('virtualMachineScaleSetName'), uniqueString(resourceGroup().id)), 0, 9))]", // Infixe du nom pour le scale set, utilisant une chaîne unique pour éviter les conflits de nom.
     "autoScaleResourceName": "[concat(substring(parameters('virtualMachineScaleSetName'), 0, min(length(parameters('virtualMachineScaleSetName')), 55)), 'autoscale')]",
     "vmssId": "[resourceId('Microsoft.Compute/virtualMachineScaleSets', parameters('virtualMachineScaleSetName'))]"
   },
-  "resources": [
+  "resources": [ // Liste des ressources déployées dans ce modèle, incluant le réseau virtuel, le load balancer et le scale set de machines virtuelles.
     {
       "name": "[parameters('virtualNetworkName')]",
       "type": "Microsoft.Network/virtualNetworks",
@@ -127,9 +127,9 @@
       "location": "[parameters('location')]",
       "properties": {
         "addressSpace": {
-          "addressPrefixes": "[parameters('addressPrefixes')]"
+          "addressPrefixes": "[parameters('addressPrefixes')]" // Espace d'adresses IP du réseau virtuel, défini par les préfixes d'adresse IP.
         },
-        "subnets": "[parameters('subnets')]"
+        "subnets": "[parameters('subnets')]" // Sous-réseaux définis dans le réseau virtuel, pour segmenter le trafic réseau.
       }
     },
     {
@@ -156,7 +156,7 @@
         "idleTimeoutInMinutes": 15
       },
       "sku": {
-        "name": "Standard"
+        "name": "Standard" // SKU du load balancer, "Standard" offre plus de fonctionnalités pour la haute disponibilité.
       },
       "zones": [
         "1",
@@ -177,14 +177,14 @@
             "name": "[concat(parameters('loadBalancerName'), '-frontendconfig01')]",
             "properties": {
               "publicIPAddress": {
-                "id": "[resourceId('Microsoft.Network/publicIpAddresses', concat(parameters('loadBalancerName'), '-publicip'))]"
+                "id": "[resourceId('Microsoft.Network/publicIpAddresses', concat(parameters('loadBalancerName'), '-publicip'))]" // Configuration de l'adresse IP publique pour permettre l'accès externe.
               }
             }
           }
         ],
         "backendAddressPools": [
           {
-            "name": "[parameters('backendPoolName')]"
+            "name": "[parameters('backendPoolName')]" // Pool d'adresses backend où le load balancer distribuera le trafic.
           }
         ],
         "loadBalancingRules": [
@@ -203,7 +203,7 @@
               "idleTimeoutInMinutes": 15,
               "disableOutboundSnat": true,
               "loadDistribution": "Default",
-              "protocol": "[parameters('loadbalancingRuleProtocol')]",
+              "protocol": "[parameters('loadbalancingRuleProtocol')]", // Règles de load balancing pour distribuer le trafic réseau entre le frontend et le backend.
               "probe": {
                 "id": "[resourceId('Microsoft.Network/loadBalancers/probes', parameters('loadBalancerName'), concat(parameters('loadBalancerName'), '-probe01'))]"
               }
@@ -243,7 +243,7 @@
         ]
       },
       "dependsOn": [
-        "[concat('Microsoft.Network/publicIpAddresses/', concat(parameters('loadBalancerName'), '-publicip'))]"
+        "[concat('Microsoft.Network/publicIpAddresses/', concat(parameters('loadBalancerName'), '-publicip'))]" // Dépendance sur l'adresse IP publique, s'assurant qu'elle est disponible avant de configurer le load balancer.
       ]
     },
     {
@@ -252,7 +252,7 @@
       "name": "[variables('autoScaleResourceName')]",
       "location": "[parameters('location')]",
       "dependsOn": [
-        "[concat('Microsoft.Compute/virtualMachineScaleSets/', parameters('virtualMachineScaleSetName'))]"
+        "[concat('Microsoft.Compute/virtualMachineScaleSets/', parameters('virtualMachineScaleSetName'))]" // Dépendance sur le scale set, s'assurant qu'il est configuré avant d'activer l'auto-scaling.
       ],
       "properties": {
         "name": "[variables('autoScaleResourceName')]",
@@ -261,7 +261,7 @@
         "profiles": [
           {
             "name": "Condition par défaut",
-            "capacity": {
+            "capacity": { // Capacité minimale et maximale du scale set, contrôlant le nombre d'instances de VM.
               "default": 2,
               "minimum": 2,
               "maximum": 10
@@ -276,13 +276,13 @@
                   "timeWindow": "PT5M",
                   "timeAggregation": "Average",
                   "operator": "GreaterThan",
-                  "threshold": "50"
+                  "threshold": "50" // Déclencheur pour augmenter la capacité si l'utilisation CPU dépasse 50%.
                 },
                 "scaleAction": {
                   "cooldown": "PT5M",
                   "direction": "Increase",
                   "type": "ChangeCount",
-                  "value": "1"
+                  "value": "1" // Augmente d'une instance lorsque la règle est déclenchée.
                 }
               },
               {
@@ -317,7 +317,7 @@
         "[concat('Microsoft.Network/virtualNetworks/', parameters('virtualNetworkName'))]",
         "networkSecurityGroups",
         "[concat('Microsoft.Network/virtualNetworks/', parameters('virtualNetworkName'))]",
-        "[concat('Microsoft.Network/loadBalancers/', parameters('loadBalancerName'))]"
+        "[concat('Microsoft.Network/loadBalancers/', parameters('loadBalancerName'))]" // Dépendances pour garantir que le réseau et le load balancer sont disponibles avant de créer le scale set.
       ],
       "properties": {
         "virtualMachineProfile": {
@@ -326,14 +326,14 @@
               "createOption": "fromImage",
               "caching": "ReadWrite",
               "managedDisk": {
-                "storageAccountType": "[parameters('osDiskType')]"
+                "storageAccountType": "[parameters('osDiskType')]" // Type de disque géré pour le système d'exploitation, basé sur les paramètres.
               }
             },
             "imageReference": {
               "publisher": "canonical",
               "offer": "ubuntu-24_04-lts",
               "sku": "server",
-              "version": "latest"
+              "version": "latest" // Référence de l'image système d'exploitation, ici Ubuntu.
             }
           },
           "networkProfile": {
@@ -388,7 +388,7 @@
           "osProfile": {
             "computerNamePrefix": "[variables('namingInfix')]",
             "adminUsername": "[parameters('adminUsername')]",
-            "adminPassword": "[parameters('adminPassword')]",
+            "adminPassword": "[parameters('adminPassword')]", // Configuration des informations d'identification pour accéder aux VM.
             "linuxConfiguration": {
               "disablePasswordAuthentication": false,
               "patchSettings": {
@@ -410,28 +410,28 @@
         "platformFaultDomainCount": "[parameters('platformFaultDomainCount')]",
         "scaleInPolicy": "[parameters('scaleInPolicy')]",
         "upgradePolicy": {
-          "mode": "[parameters('upgradePolicy')]"
+          "mode": "[parameters('upgradePolicy')]" // Politique de mise à jour des VM (par exemple "Automatic" ou "Manual").
         },
         "additionalCapabilities": {
           "hibernationEnabled": false
         },
         "automaticRepairsPolicy": {
           "enabled": "[parameters('autoRepairsPolicyEnabled')]",
-          "gracePeriod": "[parameters('gracePeriod')]",
+          "gracePeriod": "[parameters('gracePeriod')]", // Politique de réparation automatique pour redémarrer les VM si elles échouent.
           "repairAction": "[parameters('autoRepairsAction')]"
         }
       },
       "sku": {
         "name": "[parameters('instanceSize')]",
-        "capacity": "[int(parameters('instanceCount'))]"
+        "capacity": "[int(parameters('instanceCount'))]" // Spécifie la taille et la capacité du scale set, contrôlant le nombre d'instances.
       },
-      "zones": "[parameters('zone')]"
+      "zones": "[parameters('zone')]" // Distribution des instances de VM dans plusieurs zones pour assurer la résilience.
     }
   ],
   "outputs": {
     "adminUsername": {
       "type": "string",
-      "value": "[parameters('adminUsername')]"
+      "value": "[parameters('adminUsername')]" // Retourne le nom d'utilisateur administrateur en sortie après le déploiement.
     }
   }
 }
