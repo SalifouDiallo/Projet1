@@ -1,14 +1,14 @@
 ﻿{
-  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#", // Schéma pour valider le fichier de paramètres de déploiement Azure.
+  "contentVersion": "1.0.0.0", // Version du contenu, utilisée pour le contrôle de version du modèle.
+  "parameters": { // Région où les ressources seront déployées ("Canada Central" dans cet exemple).
     "location": {
       "value": "canadacentral"
     },
-    "osDiskType": {
+    "osDiskType": { // Type de disque pour le système d'exploitation des VM, ici un disque SSD standard en redondance locale.
       "value": "StandardSSD_LRS"
     },
-    "addressPrefixes": {
+    "addressPrefixes": { // Espace d'adressage IP du réseau virtuel, défini ici pour le sous-réseau principal.
       "value": [
         "10.0.0.0/16"
       ]
@@ -45,7 +45,7 @@
                 "sourceAddressPrefix": "*",
                 "sourcePortRange": "*",
                 "destinationAddressPrefix": "*",
-                "destinationPortRange": "80"
+                "destinationPortRange": "80" // Règle de sécurité réseau permettant le trafic HTTP entrant sur le port 80.
               }
             },
             {
@@ -58,7 +58,7 @@
                 "sourceAddressPrefix": "*",
                 "sourcePortRange": "*",
                 "destinationAddressPrefix": "*",
-                "destinationPortRange": "22"
+                "destinationPortRange": "22" // Règle de sécurité réseau permettant le trafic SSH entrant sur le port 22 pour la gestion à distance.
               }
             }
           ]
@@ -79,7 +79,7 @@
           ],
           "applicationSecurityGroups": [],
           "loadBalancerInboundNatPools": [],
-          "enableAcceleratedNetworking": false,
+          "enableAcceleratedNetworking": false, // Configuration de l'interface réseau principale de la VM, associée à un sous-réseau spécifique sans réseau accéléré activé.
           "nsgName": "basicNsgvmsscire-vnet-nic01",
           "nsgId": "/subscriptions/0673c009-6d00-4254-9178-35fed48c87be/resourceGroups/vmsscire/providers/Microsoft.Network/networkSecurityGroups/basicNsgvmsscire-vnet-nic01",
           "pipName": "publicIp-vmsscire-vnet-nic01"
@@ -87,7 +87,7 @@
       ]
     },
     "backendPoolName": {
-      "value": "bepool"
+      "value": "bepool" // Nom du pool backend pour le Load Balancer, qui répartit le trafic entre les instances de VM.
     },
     "loadBalancerName": {
       "value": "loadbalancer"
@@ -110,13 +110,13 @@
     "virtualMachineScaleSetName": {
       "value": "vmss"
     },
-    "instanceCount": {
+    "instanceCount": { // Nombre d'instances de VM dans le scale set.
       "value": "2"
     },
-    "instanceSize": {
+    "instanceSize": { // Taille des VM dans le scale set, définissant les ressources CPU et RAM disponibles pour chaque instance.
       "value": "Standard_D2s_v3"
     },
-    "zone": {
+    "zone": { // Zones de disponibilité pour la répartition des VM, améliorant la résilience du déploiement.
       "value": [
         "1",
         "2"
@@ -136,13 +136,13 @@
         "forceDeletion": false
       }
     },
-    "upgradePolicy": {
+    "upgradePolicy": { // Politique de mise à niveau définie sur "Manuel", nécessitant une action manuelle pour mettre à jour les instances.
       "value": "Manual"
     },
     "hibernationEnabled": {
       "value": false
     },
-    "adminUsername": {
+    "adminUsername": { // Nom d'utilisateur administrateur pour l'accès aux VM.
       "value": "azureuser"
     },
     "adminPassword": {
@@ -151,16 +151,16 @@
     "customData": {
       "value": null
     },
-    "securityType": {
+    "securityType": { // Type de sécurité pour les VM, activant des fonctionnalités de sécurité avancées (par exemple, Trusted Launch).
       "value": "TrustedLaunch"
     },
-    "secureBoot": {
+    "secureBoot": { // Activation du démarrage sécurisé (Secure Boot) pour empêcher les attaques au niveau du firmware.
       "value": true
     },
-    "vTPM": {
+    "vTPM": { // Activation de la puce TPM virtuelle (vTPM) pour le chiffrement et la sécurité avancée des VM.
       "value": true
     },
-    "healthExtensionProtocol": {
+    "healthExtensionProtocol": { // Protocole utilisé pour le monitoring de l'extension de santé (HTTP dans cet exemple).
       "value": "http"
     },
     "healthExtensionPort": {
@@ -169,10 +169,10 @@
     "healthExtensionRequestPath": {
       "value": "/"
     },
-    "autoRepairsPolicyEnabled": {
+    "autoRepairsPolicyEnabled": { // Politique de réparation automatique désactivée, les VM ne seront pas automatiquement remplacées en cas de défaillance.
       "value": false
     },
-    "gracePeriod": {
+    "gracePeriod": { // Période de grâce avant qu'une action de réparation automatique ne soit lancée.
       "value": "PT10M"
     },
     "autoRepairsAction": {
