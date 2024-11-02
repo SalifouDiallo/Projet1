@@ -4,15 +4,15 @@
 # https://aka.ms/yaml
 
 trigger:
-- master
+- master    # Declenche le pipeline a chaque modification sur la branche 'master'.
 
-pool: 'default'
+pool: 'default' # Definit le pool d'agents par defaut pour executer les taches.
 
 variables:
  - name: CloudInitContent  # Variable pour stocker le contenu encode en Base64.
    value: ''
 
-steps:
+steps:  # Commence la liste des etapes a executer dans ce pipeline.
 - task: AzureResourceManagerTemplateDeployment@3
   inputs:
     deploymentScope: 'Resource Group'
@@ -25,7 +25,8 @@ steps:
     csmFile: '$(Build.SourcesDirectory)\KeyVaultRG\azuredeploy.json'
     csmParametersFile: '$(Build.SourcesDirectory)\KeyVaultRG\azuredeploy.parameters.json'
     deploymentMode: 'Validation'
-
+# Cette etape valide le modele ARM (fichier `azuredeploy.json`) avant de le deployer dans le groupe de ressources 'KeyRessourceGroup' dans la region 'East US'.
+# Ce deploiement est defini sur "Validation", donc aucune ressource n'est creee ou modifiee ; cela sert uniquement a verifier la syntaxe et les dependances du modele.
 - task: AzureResourceManagerTemplateDeployment@3
   inputs:
     deploymentScope: 'Resource Group'
@@ -39,3 +40,6 @@ steps:
     csmParametersFile: '$(Build.SourcesDirectory)\VMSS\azuredeploy.parameters.json'
     overrideParameters: '-adminPassword $(adminPass) -customData $(CloudInitContent)'
     deploymentMode: 'Validation'
+# Cette etape valide un autre modele ARM pour le groupe de ressources 'vmsscire' dans la region 'Canada Central'.
+# Les parametres `adminPassword` et `customData` sont remplaces par des valeurs specifiques pour ce deploiement.
+# Le mode de deploiement est encore "Validation", donc cette etape verifie simplement le modele sans effectuer de modifications.
