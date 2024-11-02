@@ -1,49 +1,49 @@
 ﻿{
-  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#", // Définit le schéma pour les paramètres du modèle de déploiement Azure. Cela aide Azure à valider le fichier de paramètres.
+  "contentVersion": "1.0.0.0", // Version du contenu du fichier de paramètres. Utilisé pour le contrôle de version interne.
+  "parameters": { // Début de la section des paramètres. Chaque paramètre correspond à une valeur utilisée lors du déploiement du Key Vault.
     "name": {
-      "value": "tpkeysalifou"
+      "value": "tpkeysalifou" // Définit le nom du Key Vault à déployer ("tpkeysalifou").
     },
     "location": {
-      "value": "eastus"
+      "value": "eastus" // Spécifie la région dans laquelle le Key Vault sera déployé ("eastus" pour East US).
     },
     "sku": {
-      "value": "Standard"
+      "value": "Standard" // Détermine le niveau de service (SKU) du Key Vault, ici défini sur "Standard".
     },
     "accessPolicies": {
-      "value": []
+      "value": [] // Liste des politiques d'accès pour le Key Vault. Actuellement vide, donc aucun accès n'est accordé par défaut.
     },
     "tenant": {
-      "value": "16ebe709-454e-4bae-bc09-433e0f1836ed"
+      "value": "16ebe709-454e-4bae-bc09-433e0f1836ed" // ID du locataire (tenant) Azure Active Directory associé au Key Vault. Identifiant unique pour la gestion des autorisations.
     },
     "enabledForDeployment": {
-      "value": false
+      "value": false // Indique si le Key Vault peut être utilisé pour le déploiement de ressources, ici désactivé (false).
     },
     "enabledForTemplateDeployment": {
-      "value": false
+      "value": false // Indique si le Key Vault peut être utilisé dans les déploiements de modèles ARM, ici désactivé (false).
     },
     "enabledForDiskEncryption": {
-      "value": false
+      "value": false // Spécifie si le Key Vault peut être utilisé pour le chiffrement des disques Azure. Ici, cette option est désactivée (false).
     },
     "enableRbacAuthorization": {
-      "value": true
+      "value": true // Active l'autorisation RBAC (contrôle d'accès basé sur les rôles) pour le Key Vault, ici activée (true).
     },
     "publicNetworkAccess": {
-      "value": "Enabled"
+      "value": "Enabled" // Définit l'accès réseau public au Key Vault, ici activé ("Enabled").
     },
     "enableSoftDelete": {
-      "value": true
+      "value": true // Active la fonctionnalité de suppression temporaire ("soft delete"), permettant de récupérer les secrets supprimés.
     },
     "softDeleteRetentionInDays": {
-      "value": 90
+      "value": 90 // Durée de rétention en jours pour la suppression temporaire, fixée à 90 jours.
     },
     "networkAcls": {
       "value": {
-        "defaultAction": "allow",
-        "bypass": "None",
-        "ipRules": [],
-        "virtualNetworkRules": []
+        "defaultAction": "allow", // Action par défaut pour les requêtes réseau, ici autorisée ("allow").
+        "bypass": "None", // Aucune exception (bypass) configurée. Toutes les règles de réseau seront appliquées.
+        "ipRules": [], // Liste des règles d'accès par IP. Vide ici, donc aucun filtrage IP n'est appliqué.
+        "virtualNetworkRules": [] // Liste des règles d'accès par réseau virtuel, également vide ici.
       }
     }
   }
