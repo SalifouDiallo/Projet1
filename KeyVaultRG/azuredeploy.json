@@ -1,73 +1,74 @@
 ﻿{
-  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-  "contentVersion": "1.0.0.0",
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#", // Définition du schéma pour un modèle de déploiement Azure. Spécifie la version à utiliser pour valider le modèle.
+  "contentVersion": "1.0.0.0", // Version du contenu du modèle. Peut être modifiée si le modèle est mis à jour.
   "parameters": {
+    // Section qui définit les paramètres passés lors du déploiement. Permet de rendre le modèle flexible et réutilisable.
     "name": {
-      "type": "string"
+      "type": "string" // Nom du Key Vault, attendu comme une chaîne de caractères.
     },
     "location": {
-      "type": "string"
+      "type": "string" // Emplacement géographique où le Key Vault sera déployé, comme "East US" ou "West Europe".
     },
     "sku": {
-      "type": "string"
+      "type": "string" // SKU du Key Vault, détermine le niveau de service (par exemple, "standard" ou "premium").
     },
     "accessPolicies": {
-      "type": "array"
+      "type": "array" // Définit une liste de politiques d'accès pour le Key Vault, incluant les autorisations d'accès des utilisateurs ou des applications.
     },
     "tenant": {
-      "type": "string"
+      "type": "string" // ID du locataire (tenant) Azure Active Directory (AAD) associé au Key Vault.
     },
     "enabledForDeployment": {
-      "type": "bool"
+      "type": "bool" // Indique si le Key Vault peut être utilisé pour le déploiement de machines virtuelles.
     },
     "enabledForTemplateDeployment": {
-      "type": "bool"
+      "type": "bool" // Indique si le Key Vault peut être utilisé dans les déploiements de modèles ARM.
     },
     "enabledForDiskEncryption": {
-      "type": "bool"
+      "type": "bool" // Permet au Key Vault d'être utilisé pour le chiffrement des disques (Azure Disk Encryption).
     },
     "enableRbacAuthorization": {
-      "type": "bool"
+      "type": "bool" // Active l'autorisation RBAC (contrôle d'accès basé sur les rôles) pour le Key Vault.
     },
     "publicNetworkAccess": {
-      "type": "string "
+      "type": "string " // Définit l'accès réseau public au Key Vault ("Enabled" ou "Disabled").
     },
     "enableSoftDelete": {
-      "type": "bool"
+      "type": "bool" // Active la suppression "soft delete" pour protéger les secrets supprimés pendant une période définie.
     },
     "softDeleteRetentionInDays": {
-      "type": "int"
+      "type": "int" // Durée en jours de la rétention pour la suppression "soft delete".
     },
     "networkAcls": {
-      "type": "object"
+      "type": "object" // Liste des contrôles d'accès réseau, permettant de restreindre l'accès au Key Vault par adresse IP ou sous-réseau.
     }
   },
-  "variables": {},
-  "resources": [
+  "variables": {}, // Section des variables, vide ici, qui pourrait être utilisée pour des valeurs calculées ou intermédiaires.
+  "resources": [ // Liste des ressources à déployer. Dans ce modèle, une seule ressource Key Vault est définie.
     {
-      "apiVersion": "2023-08-01-preview",
-      "name": "[parameters('name')]",
-      "location": "[parameters('location')]",
-      "type": "Microsoft.KeyVault/vaults",
-      "properties": {
-        "enabledForDeployment": "[parameters('enabledForDeployment')]",
-        "enabledForTemplateDeployment": "[parameters('enabledForTemplateDeployment')]",
-        "enabledForDiskEncryption": "[parameters('enabledForDiskEncryption')]",
-        "enableRbacAuthorization": "[parameters('enableRbacAuthorization')]",
-        "accessPolicies": "[parameters('accessPolicies')]",
-        "tenantId": "[parameters('tenant')]",
-        "sku": {
+      "apiVersion": "2023-08-01-preview", // Version de l'API utilisée pour le Key Vault, spécifiant les fonctionnalités et la syntaxe disponibles.
+      "name": "[parameters('name')]", // Utilisation du paramètre 'name' pour définir le nom du Key Vault.
+      "location": "[parameters('location')]", // Utilisation du paramètre 'location' pour définir la région du Key Vault.
+      "type": "Microsoft.KeyVault/vaults", // Type de ressource, ici un coffre de clés (Key Vault) de Microsoft.
+      "properties": { // Propriétés du Key Vault, définies à partir des paramètres fournis.
+        "enabledForDeployment": "[parameters('enabledForDeployment')]", // Définit la capacité du Key Vault à être utilisé dans les déploiements de VM.
+        "enabledForTemplateDeployment": "[parameters('enabledForTemplateDeployment')]", // Définit si le Key Vault peut être utilisé dans les déploiements de modèles.
+        "enabledForDiskEncryption": "[parameters('enabledForDiskEncryption')]", // Définit si le Key Vault peut être utilisé pour le chiffrement des disques.
+        "enableRbacAuthorization": "[parameters('enableRbacAuthorization')]", // Définit si le Key Vault utilise le RBAC pour la gestion des accès.
+        "accessPolicies": "[parameters('accessPolicies')]", // Liste des politiques d'accès pour le Key Vault.
+        "tenantId": "[parameters('tenant')]", // ID du tenant AAD pour le Key Vault.
+        "sku": { // Spécifie le niveau de service (SKU) du Key Vault et sa famille.
           "name": "[parameters('sku')]",
           "family": "A"
         },
-        "publicNetworkAccess": "[parameters('publicNetworkAccess')]",
-        "enableSoftDelete": "[parameters('enableSoftDelete')]",
-        "softDeleteRetentionInDays": "[parameters('softDeleteRetentionInDays')]",
-        "networkAcls": "[parameters('networkAcls')]"
+        "publicNetworkAccess": "[parameters('publicNetworkAccess')]", // Définit l'accès réseau public au Key Vault.
+        "enableSoftDelete": "[parameters('enableSoftDelete')]", // Active la fonctionnalité de suppression temporaire pour la récupération des secrets supprimés.
+        "softDeleteRetentionInDays": "[parameters('softDeleteRetentionInDays')]", // Définit la durée de conservation des éléments supprimés dans le Key Vault.
+        "networkAcls": "[parameters('networkAcls')]" // Configuration des contrôles d'accès réseau pour le Key Vault.
       },
-      "tags": {},
-      "dependsOn": []
+      "tags": {}, // Champ pour ajouter des étiquettes personnalisées aux ressources, vide ici.
+      "dependsOn": [] // Dépendances de la ressource, vide ici car il n'y a pas de dépendances.
     }
   ],
-  "outputs": {}
+  "outputs": {} // Section des sorties, vide ici. Elle pourrait être utilisée pour renvoyer des informations après le déploiement.
 }
